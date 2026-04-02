@@ -84,7 +84,7 @@
 			<li>Compute \( t = (e_2 \cdot q) / a\). If \( t \in [t_{min}, t_{max}] \), valid intersection</li>
 		</ol>
 
-		<p>The surface normal is determined by taking the average of the vertex normals weighted by their barycentric coordinates </p>
+		<p>The surface normal is determined by taking the average of the vertex normals weighted by their barycentric coordinates. </p>
 
 		<p>Given ray \(\mathbf{r}(t) = \mathbf{o} + t\mathbf{d}\) and a sphere centered at \(\mathbf{c}\) with radius
 			\(r\), we substitute the ray into the sphere equation \(|\mathbf{p} - \mathbf{c}|^2 = r^2\), yielding the
@@ -287,7 +287,7 @@
 			At each hit point, we first compute direct lighting via <code>one_bounce_radiance</code> (if
 			<code>isAccumBounces=true</code>, or if we are exactly at <code>max_ray_depth</code>). Then, unless
 			we've hit the base case (<code>r.depth &lt;= 1</code>), we apply Russian Roulette with termination
-			probability 0.35 — if we survive, we sample a new direction from the BSDF using
+			probability 0.35. Given it survives, we sample a new direction from the BSDF using
 			<code>sample_f</code>, cast a new ray from the hit point, and recursively call
 			<code>at_least_one_bounce_radiance</code> on the next intersection. The indirect contribution is
 			accumulated as:
@@ -300,6 +300,10 @@
 			Each ray's <code>depth</code> decrements by 1 per bounce, and recursion stops when depth reaches 1
 			or Russian Roulette terminates the path.
 		  </p>
+
+		  <p>
+			Normal global illumination without Russian Roulette was implemented with a termination rate of 0. 
+			</p>
 
 
 		  <h2>Global Illumination Results (1024 spp)</h2>
@@ -361,12 +365,10 @@
 </div>
 
 <p>
-  The 2nd bounce of light illuminates areas that are in shadow from the direct light — most visibly
-  the underside of the bunny and the ceiling, which receive light only after it has reflected off
+  The 2nd bounce of light illuminates areas that are in shadow from the direct light, most visibly
+  at the underside of the bunny and the ceiling, which receive light only after it has reflected off
   the floor and walls. The 3rd bounce softens the scene further, filling in darker corners and
-  adding subtle color bleeding from the red and blue walls onto the bunny. These effects are
-  impossible to achieve in rasterization without expensive hacks like ambient occlusion or
-  precomputed light maps — path tracing computes them naturally and correctly through recursion.
+  adding subtle color bleeding from the red and blue walls onto the bunny. 
 </p>
 
 
